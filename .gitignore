@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Electron build output
+dist/
+out/
+release/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and coverage
+*.log
+npm-debug.log*
+coverage/
+
+# macOS
+.DS_Store
+
+# Editor/OS files
+.vscode/
+.idea/
