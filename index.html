@@ -3,49 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Progress Report Tracker</title>
+  <title>Progress Report and Eval Tracker</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="shell">
     <header class="page-header">
       <div>
-        <p class="eyebrow">LOCAL CLIENT MANAGEMENT</p>
-        <h1>Client progress report tracker</h1>
-        <p class="subtitle">Keep an eye on which progress reports are due next.</p>
+        <h1>Progress Report and Eval Tracker</h1>
+        <p class="subtitle">Keep an eye on upcoming progress reports and evaluations.</p>
       </div>
       <button id="add-token-button" class="primary-button" type="button">+ Add client</button>
     </header>
 
-    <section class="card" aria-labelledby="token-list-heading">
-      <div class="card-heading">
-        <h2 id="token-list-heading">Your clients</h2>
-        <span id="token-count" class="token-count">0 clients</span>
-      </div>
-      <div id="empty-state" class="empty-state">No clients added yet. Add one to start tracking progress report due dates.</div>
-      <div id="table-wrap" class="table-wrap" hidden>
-        <table>
-          <thead>
-            <tr>
-              <th><button class="sort-button" data-sort="name" type="button">Client <span class="sort-indicator" aria-hidden="true"></span></button></th>
-              <th><button class="sort-button" data-sort="expiryDate" type="button">Next progress report <span class="sort-indicator" aria-hidden="true"></span></button></th>
-              <th><span class="sr-only">Actions</span></th>
-            </tr>
-          </thead>
-          <tbody id="token-rows"></tbody>
-        </table>
-      </div>
+    <nav class="page-tabs" aria-label="Tracker views">
+      <a class="page-tab" href="calendar.html">Calendar</a>
+      <a class="page-tab is-active" href="index.html" aria-current="page">Clients</a>
+      <a class="page-tab" href="settings.html">Settings</a>
+    </nav>
+
+    <section id="client-workspace" class="client-workspace" aria-label="Client list and actions">
+      <div id="left-actions" class="floating-action-rail" aria-label="Client actions"></div>
+      <section class="card" aria-labelledby="token-list-heading">
+        <div class="card-heading">
+          <h2 id="token-list-heading">Your clients</h2>
+          <div class="list-controls">
+            <label class="filter-label" for="medicaid-filter">Medicaid
+              <select id="medicaid-filter" aria-label="Filter by Medicaid client">
+                <option value="all">All</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </label>
+            <button id="reset-sort-button" class="secondary-button reset-sort-button" type="button" title="Sort by the soonest progress report or evaluation due date">Reset sort</button>
+            <span id="token-count" class="token-count">0 clients</span>
+          </div>
+        </div>
+        <div id="empty-state" class="empty-state">No clients added yet. Add one to start tracking report and evaluation due dates.</div>
+        <div id="table-wrap" class="table-wrap" hidden>
+          <table>
+            <thead>
+              <tr>
+                <th><button class="sort-button" data-sort="name" type="button">Client <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th>Medicaid client</th>
+                <th><button class="sort-button" data-sort="nextProgressDue" type="button">Next progress report <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th><button class="sort-button" data-sort="nextEvalDue" type="button">Next eval due <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              </tr>
+            </thead>
+            <tbody id="token-rows"></tbody>
+          </table>
+        </div>
+      </section>
+      <div id="right-actions" class="floating-action-rail" aria-label="Submission actions"></div>
     </section>
+
   </main>
 
   <dialog id="token-dialog" aria-labelledby="dialog-title">
     <form id="token-form" method="dialog">
-      <div class="dialog-header"><div><p class="eyebrow">NEW CLIENT</p><h2 id="dialog-title">Add a client</h2></div><button id="close-dialog" class="icon-button" type="button" aria-label="Close">×</button></div>
-      <label>Client name<input id="token-name" required autocomplete="off" placeholder="e.g. Acme Corporation" /></label>
-      <label>Client start date<input id="creation-date" type="date" required /></label>
-      <label>Progress report due in<div class="duration-row"><input id="duration" type="number" min="1" step="1" value="90" required /><select id="duration-unit"><option value="days">days</option><option value="weeks">weeks</option><option value="months">months</option></select></div></label>
+      <div class="dialog-header"><div><p id="dialog-eyebrow" class="eyebrow">NEW CLIENT</p><h2 id="dialog-title">Add a client</h2></div><button id="close-dialog" class="icon-button" type="button" aria-label="Close">×</button></div>
+      <div id="intake-tabs" class="intake-tabs" role="tablist" aria-label="Client intake type">
+        <button id="new-client-tab" class="intake-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="new-client-fields">New client</button>
+        <button id="existing-client-tab" class="intake-tab" type="button" role="tab" aria-selected="false" aria-controls="existing-client-fields">Existing client</button>
+      </div>
+      <label>Client name<input id="token-name" required autocomplete="off" /></label>
+      <label>Medicaid client<select id="medicaid-client" required><option value="no">No</option><option value="yes">Yes</option></select></label>
+      <section id="new-client-fields" class="intake-fields" role="tabpanel" aria-labelledby="new-client-tab">
+        <label id="creation-date-label">Initial eval date<input id="creation-date" type="date" required /></label>
+        <label>Next progress report due <span class="due-days">(one-time override)</span><span class="due-date-row"><input id="next-progress-due" type="date" required /><span id="next-progress-days" class="due-days"></span></span></label>
+        <label>Next eval due <span class="due-days">(one-time override)</span><span class="due-date-row"><input id="next-eval-due" type="date" required /><span id="next-eval-days" class="due-days"></span></span></label>
+      </section>
+      <section id="existing-client-fields" class="intake-fields" role="tabpanel" aria-labelledby="existing-client-tab" hidden>
+        <label>Last evaluation date<input id="last-eval-date" type="date" /></label>
+        <label>Last progress report date <span class="due-days">(if applicable)</span><input id="last-progress-date" type="date" /></label>
+        <label id="occurrence-choice-field" hidden><span id="occurrence-choice-label"></span><select id="occurrence-choice"></select></label>
+      </section>
       <p id="form-error" class="form-error" role="alert"></p>
-      <div class="dialog-actions"><button id="cancel-dialog" class="secondary-button" type="button">Cancel</button><button class="primary-button" type="submit">Add client</button></div>
+      <div class="dialog-actions"><button id="cancel-dialog" class="secondary-button" type="button">Cancel</button><button id="save-client-button" class="primary-button" type="submit">Add client</button></div>
     </form>
   </dialog>
   <dialog id="delete-dialog" aria-labelledby="delete-dialog-title">
@@ -55,6 +89,24 @@
       <div class="dialog-actions"><button id="cancel-delete" class="secondary-button" type="button">Cancel</button><button id="confirm-delete" class="danger-button" type="submit">Delete client</button></div>
     </form>
   </dialog>
+  <dialog id="submission-dialog" aria-labelledby="submission-dialog-title">
+    <form id="submission-form" method="dialog">
+      <div class="dialog-header"><div><p id="submission-eyebrow" class="eyebrow">PROGRESS REPORT</p><h2 id="submission-dialog-title">Progress report submitted</h2></div><button id="close-submission-dialog" class="icon-button" type="button" aria-label="Close">×</button></div>
+      <p id="submission-schedule-note" class="dialog-note"></p>
+      <label>Date submitted<input id="submitted-date" type="date" required /></label>
+      <p id="submission-form-error" class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button id="cancel-submission-dialog" class="secondary-button" type="button">Cancel</button><button class="primary-button" type="submit">Record submission</button></div>
+    </form>
+  </dialog>
+  <dialog id="history-dialog" aria-labelledby="history-dialog-title">
+    <div class="history-dialog-content">
+      <div class="dialog-header"><div><p class="eyebrow">SUBMISSION HISTORY</p><h2 id="history-dialog-title">Submission history</h2></div><button id="close-history-dialog" class="icon-button" type="button" aria-label="Close">×</button></div>
+      <div id="history-list" class="history-list"></div>
+      <div class="dialog-actions"><button id="close-history-button" class="secondary-button" type="button">Close</button></div>
+    </div>
+  </dialog>
+  <script src="settings-utils.js"></script>
+  <script src="theme.js"></script>
   <script src="date-utils.js"></script>
   <script src="renderer.js"></script>
 </body>
