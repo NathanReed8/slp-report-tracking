@@ -6,6 +6,10 @@ function dataPath() {
   return path.join(app.getPath('userData'), 'tokens.json');
 }
 
+function settingsPath() {
+  return path.join(app.getPath('userData'), 'settings.json');
+}
+
 async function readTokens() {
   try {
     const contents = await fs.readFile(dataPath(), 'utf8');
@@ -21,6 +25,21 @@ async function writeTokens(tokens) {
   const file = dataPath();
   await fs.mkdir(path.dirname(file), { recursive: true });
   await fs.writeFile(file, `${JSON.stringify(tokens, null, 2)}\n`, 'utf8');
+}
+
+async function readSettings() {
+  try {
+    return JSON.parse(await fs.readFile(settingsPath(), 'utf8'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') console.warn('Could not read settings:', error);
+    return null;
+  }
+}
+
+async function writeSettings(settings) {
+  const file = settingsPath();
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, `${JSON.stringify(settings, null, 2)}\n`, 'utf8');
 }
 
 function createWindow() {
@@ -44,6 +63,12 @@ ipcMain.handle('tokens:load', readTokens);
 ipcMain.handle('tokens:save', async (_event, tokens) => {
   if (!Array.isArray(tokens)) throw new TypeError('Tokens must be an array');
   await writeTokens(tokens);
+  return true;
+});
+ipcMain.handle('settings:load', readSettings);
+ipcMain.handle('settings:save', async (_event, settings) => {
+  if (!settings || typeof settings !== 'object' || Array.isArray(settings)) throw new TypeError('Settings must be an object');
+  await writeSettings(settings);
   return true;
 });
 
