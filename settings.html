@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | Progress Report and Eval Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="page-header">
+      <div>
+        <h1>Progress Report and Eval Tracker</h1>
+        <p class="subtitle">Keep an eye on upcoming progress reports and evaluations.</p>
+      </div>
+      <a class="primary-button" href="index.html">Manage clients</a>
+    </header>
+
+    <nav class="page-tabs" aria-label="Tracker views">
+      <a class="page-tab" href="calendar.html">Calendar</a>
+      <a class="page-tab" href="index.html">Clients</a>
+      <a class="page-tab is-active" href="settings.html" aria-current="page">Settings</a>
+    </nav>
+
+    <form id="settings-form" class="settings-workspace">
+      <section class="settings-card" aria-labelledby="appearance-heading">
+        <div class="settings-card-heading"><div><h2 id="appearance-heading">Theme and action colors</h2></div><button id="reset-colors" class="secondary-button" type="button">Reset colors</button></div>
+        <div class="settings-card-content">
+          <fieldset class="theme-choice"><legend>Theme</legend><label><input name="theme" value="light" type="radio"> Light</label><label><input name="theme" value="dark" type="radio"> Dark</label></fieldset>
+          <p class="settings-note">Colors you set are shared between themes. Reset colors returns to the built-in palette for the selected theme.</p>
+          <div id="color-controls" class="color-controls" aria-label="Action color controls"></div>
+        </div>
+      </section>
+
+      <section class="settings-card" aria-labelledby="interval-heading">
+        <div class="settings-card-heading"><div><h2 id="interval-heading">Interval length</h2></div></div>
+        <div class="settings-card-content"><p class="settings-note">After the initial evaluation, this much time passes before each progress report / eval is due.</p><div id="interval-profiles" class="schedule-profiles"></div></div>
+      </section>
+
+      <section class="settings-card" aria-labelledby="cycle-heading">
+        <div class="settings-card-heading"><div><h2 id="cycle-heading">Repeating Progress Report / Eval cycle</h2></div></div>
+        <div class="settings-card-content"><p class="settings-note">Choose the progress report / eval order that repeats for each client group.</p><div id="cycle-profiles" class="schedule-profiles"></div></div>
+      </section>
+
+      <p id="settings-error" class="settings-status" role="alert"></p>
+      <div class="settings-actions"><button id="restore-defaults" class="secondary-button" type="button">Restore defaults</button><button class="primary-button" type="submit">Save settings</button></div>
+    </form>
+
+    <dialog id="unsaved-settings-dialog" aria-labelledby="unsaved-settings-title">
+      <div class="history-dialog-content">
+        <div class="dialog-header"><div><p class="eyebrow">UNSAVED SETTINGS</p><h2 id="unsaved-settings-title">Save changes before leaving?</h2></div></div>
+        <p class="dialog-note">You have settings changes that have not been saved.</p>
+        <div class="dialog-actions"><button id="cancel-leave-settings" class="secondary-button" type="button">Keep editing</button><button id="discard-settings" class="secondary-button" type="button">Discard changes</button><button id="save-settings-before-leaving" class="primary-button" type="button">Save changes</button></div>
+      </div>
+    </dialog>
+  </main>
+  <script src="settings-utils.js"></script>
+  <script src="theme.js"></script>
+  <script src="date-utils.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
