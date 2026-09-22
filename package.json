@@ -19,8 +19,14 @@
       "main.js",
       "preload.js",
       "index.html",
+      "calendar.html",
       "styles.css",
       "renderer.js",
+      "calendar.js",
+      "settings.html",
+      "settings.js",
+      "settings-utils.js",
+      "theme.js",
       "date-utils.js"
     ],
     "mac": {

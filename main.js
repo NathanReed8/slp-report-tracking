@@ -56,7 +56,7 @@ function createWindow() {
     }
   });
 
-  window.loadFile('index.html');
+  window.loadFile('calendar.html');
 }
 
 ipcMain.handle('tokens:load', readTokens);

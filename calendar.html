@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar | Progress Report and Eval Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="page-header">
+      <div>
+        <h1>Progress Report and Eval Tracker</h1>
+        <p class="subtitle">Keep an eye on upcoming progress reports and evaluations.</p>
+      </div>
+      <a class="primary-button" href="index.html">Manage clients</a>
+    </header>
+
+    <nav class="page-tabs" aria-label="Tracker views">
+      <a class="page-tab is-active" href="calendar.html" aria-current="page">Calendar</a>
+      <a class="page-tab" href="index.html">Clients</a>
+      <a class="page-tab" href="settings.html">Settings</a>
+    </nav>
+
+    <section class="calendar-workspace" aria-labelledby="calendar-heading">
+      <div class="calendar-toolbar">
+        <div>
+          <p class="eyebrow">DUE DATE SCHEDULE</p>
+          <h2 id="calendar-heading">Calendar</h2>
+        </div>
+        <div class="calendar-controls">
+          <div class="view-toggle" role="group" aria-label="Calendar view">
+            <button class="view-toggle-button is-active" data-calendar-view="week" type="button">Week</button>
+            <button class="view-toggle-button" data-calendar-view="month" type="button">Month</button>
+          </div>
+          <button id="calendar-previous" class="calendar-nav-button" type="button" aria-label="Previous period">‹</button>
+          <button id="calendar-today" class="secondary-button calendar-today-button" type="button">Today</button>
+          <button id="calendar-next" class="calendar-nav-button" type="button" aria-label="Next period">›</button>
+        </div>
+      </div>
+      <div class="calendar-card">
+        <div class="calendar-period-bar">
+          <h3 id="calendar-period-label"></h3>
+          <div class="calendar-legend" aria-label="Event type legend"><span><i class="legend-dot progress-dot"></i>Progress report</span><span><i class="legend-dot eval-dot"></i>Evaluation</span></div>
+        </div>
+        <div id="calendar-grid" class="calendar-grid" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="submission-dialog" aria-labelledby="submission-dialog-title">
+    <form id="submission-form" method="dialog">
+      <div class="dialog-header"><div><p id="submission-eyebrow" class="eyebrow">PROGRESS REPORT</p><h2 id="submission-dialog-title">Progress report submitted</h2></div><button id="close-submission-dialog" class="icon-button" type="button" aria-label="Close">×</button></div>
+      <p id="submission-schedule-note" class="dialog-note"></p>
+      <label>Date submitted<input id="submitted-date" type="date" required></label>
+      <p id="submission-form-error" class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button id="cancel-submission-dialog" class="secondary-button" type="button">Cancel</button><button class="primary-button" type="submit">Record submission</button></div>
+    </form>
+  </dialog>
+
+  <script src="settings-utils.js"></script>
+  <script src="theme.js"></script>
+  <script src="date-utils.js"></script>
+  <script src="calendar.js"></script>
+</body>
+</html>
