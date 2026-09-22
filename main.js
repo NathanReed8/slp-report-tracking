@@ -1,6 +1,20 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const { migrateUserData } = require('./data-migration');
+
+const APP_DATA_DIRECTORY_NAME = 'SLP Report Tracking';
+const LEGACY_APP_DATA_DIRECTORY_NAMES = [
+  'client-progress-report-tracker',
+  'Client Progress Report Tracker',
+  'token-expiration-tracker',
+  'Token Expiration Tracker'
+];
+
+// Keep user data in a stable folder even if Electron's display-name behavior
+// differs between development and packaged builds.
+app.setPath('userData', path.join(app.getPath('appData'), APP_DATA_DIRECTORY_NAME));
 
 function dataPath() {
   return path.join(app.getPath('userData'), 'tokens.json');
@@ -59,6 +73,59 @@ function createWindow() {
   window.loadFile('calendar.html');
 }
 
+function initializeAutoUpdates() {
+  if (!app.isPackaged) return;
+
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = false;
+  autoUpdater.allowPrerelease = app.getVersion().includes('-');
+
+  autoUpdater.on('error', (error) => {
+    console.warn('Update check or download failed:', error);
+  });
+
+  autoUpdater.on('update-available', async (update) => {
+    const response = await dialog.showMessageBox({
+      type: 'info',
+      title: 'Update available',
+      message: `SLP Report Tracking ${update.version} is available.`,
+      detail: 'Would you like to download it now? You can keep using the app while it downloads.',
+      buttons: ['Download update', 'Not now'],
+      defaultId: 0,
+      cancelId: 1
+    });
+
+    if (response.response === 0) {
+      try {
+        await autoUpdater.downloadUpdate();
+      } catch (error) {
+        console.warn('Could not download update:', error);
+      }
+    }
+  });
+
+  autoUpdater.on('update-downloaded', async () => {
+    const response = await dialog.showMessageBox({
+      type: 'info',
+      title: 'Update ready',
+      message: 'The update has finished downloading.',
+      detail: 'Restart SLP Report Tracking now to install it?',
+      buttons: ['Restart and install', 'Later'],
+      defaultId: 0,
+      cancelId: 1
+    });
+
+    if (response.response === 0) autoUpdater.quitAndInstall();
+  });
+
+  const updateTimer = setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((error) => {
+      console.warn('Could not check for updates:', error);
+    });
+  }, 5000);
+  updateTimer.unref();
+}
+
 ipcMain.handle('tokens:load', readTokens);
 ipcMain.handle('tokens:save', async (_event, tokens) => {
   if (!Array.isArray(tokens)) throw new TypeError('Tokens must be an array');
@@ -81,8 +148,20 @@ ipcMain.handle('window:focus', (event) => {
   return true;
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  try {
+    const migratedFiles = await migrateUserData({
+      appDataPath: app.getPath('appData'),
+      userDataPath: app.getPath('userData'),
+      legacyDirectoryNames: LEGACY_APP_DATA_DIRECTORY_NAMES
+    });
+    if (migratedFiles.length > 0) console.info(`Migrated local data: ${migratedFiles.join(', ')}`);
+  } catch (error) {
+    console.warn('Could not migrate local app data:', error);
+  }
+
   createWindow();
+  initializeAutoUpdates();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });

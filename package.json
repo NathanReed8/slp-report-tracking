@@ -1,22 +1,40 @@
 {
-  "name": "client-progress-report-tracker",
-  "version": "1.0.0",
+  "name": "slp-report-tracking",
+  "version": "1.0.0-beta.1",
   "description": "A small desktop app for tracking client progress report due dates.",
+  "author": "Nathan Reed",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "node --test",
-    "package": "electron-builder --mac"
+    "package": "npm run package:win",
+    "package:win": "electron-builder --win --x64",
+    "package:mac": "electron-builder --mac --universal"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "overrides": {
+    "js-yaml": "4.3.2"
   },
   "devDependencies": {
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "com.example.tokenexpirationtracker",
-    "productName": "Client Progress Report Tracker",
+    "appId": "com.nathanreed.slpreporttracking",
+    "productName": "SLP Report Tracking",
+    "artifactName": "SLP-Report-Tracking-${version}-${os}-${arch}.${ext}",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "NathanReed8",
+        "repo": "slp-report-tracking"
+      }
+    ],
     "files": [
       "main.js",
+      "data-migration.js",
       "preload.js",
       "index.html",
       "calendar.html",
@@ -32,6 +50,15 @@
     "mac": {
       "target": ["dmg", "zip"],
       "category": "public.app-category.utilities"
+    },
+    "win": {
+      "target": ["nsis"]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "SLP Report Tracking"
     }
   }
 }
