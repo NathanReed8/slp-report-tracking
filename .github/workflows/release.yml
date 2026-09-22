@@ -100,6 +100,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - id: version
+        name: Read release version
+        shell: bash
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
       - uses: actions/download-artifact@v4
         with:
           path: release-assets
@@ -108,4 +112,11 @@ jobs:
         with:
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, '-') }}
+          body: |
+            ## Download
+
+            - **Windows:** [Download the Windows installer (.exe)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/SLP-Report-Tracking-${{ steps.version.outputs.version }}-win-x64.exe)
+            - **Mac:** [Download the Mac installer (.dmg)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/SLP-Report-Tracking-${{ steps.version.outputs.version }}-mac-universal.dmg)
+
+            The other files support automatic updates and can be ignored for a first-time installation.
           files: release-assets/*
