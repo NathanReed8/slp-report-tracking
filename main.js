@@ -3,6 +3,7 @@ const { autoUpdater } = require('electron-updater');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { migrateUserData } = require('./data-migration');
+const { createUpdateChecker } = require('./update-check');
 
 const APP_DATA_DIRECTORY_NAME = 'SLP Report Tracking';
 const LEGACY_APP_DATA_DIRECTORY_NAMES = [
@@ -73,7 +74,13 @@ function createWindow() {
   window.loadFile('calendar.html');
 }
 
-function initializeAutoUpdates() {
+const checkForUpdates = createUpdateChecker({
+  updater: autoUpdater,
+  isPackaged: () => app.isPackaged,
+  getVersion: () => app.getVersion()
+});
+
+function initializeUpdater() {
   if (!app.isPackaged) return;
 
   autoUpdater.autoDownload = false;
@@ -117,13 +124,6 @@ function initializeAutoUpdates() {
 
     if (response.response === 0) autoUpdater.quitAndInstall();
   });
-
-  const updateTimer = setTimeout(() => {
-    autoUpdater.checkForUpdates().catch((error) => {
-      console.warn('Could not check for updates:', error);
-    });
-  }, 5000);
-  updateTimer.unref();
 }
 
 ipcMain.handle('tokens:load', readTokens);
@@ -133,6 +133,8 @@ ipcMain.handle('tokens:save', async (_event, tokens) => {
   return true;
 });
 ipcMain.handle('settings:load', readSettings);
+ipcMain.handle('updates:version', () => app.getVersion());
+ipcMain.handle('updates:check', checkForUpdates);
 ipcMain.handle('settings:save', async (_event, settings) => {
   if (!settings || typeof settings !== 'object' || Array.isArray(settings)) throw new TypeError('Settings must be an object');
   await writeSettings(settings);
@@ -161,7 +163,7 @@ app.whenReady().then(async () => {
   }
 
   createWindow();
-  initializeAutoUpdates();
+  initializeUpdater();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });

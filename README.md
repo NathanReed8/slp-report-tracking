@@ -13,13 +13,13 @@ The first public release is an **unsigned beta**. Windows may show a Microsoft D
 
 ## Updates
 
-When the installed app starts, it checks the GitHub Releases page for a newer compatible version. If one is available, it asks before downloading it and asks again before restarting to install it. The app continues to work normally if an update check or download fails.
+In the installed app, open Settings and click **Check for updates** to look for a newer compatible version on GitHub Releases. If one is available, the app asks before downloading it and again before restarting to install it. The app continues to work normally if an update check or download fails.
 
 ## Privacy and local data
 
 SLP Report Tracking does not include cloud sync, accounts, analytics, or telemetry. The app stores its client records and settings as unencrypted local files on the device. Those records remain when the app is updated, but users are responsible for securing their devices and backups appropriately for the client data they enter.
 
-The app only contacts GitHub when checking for a software update. For help or to report a problem, [open a GitHub issue](https://github.com/NathanReed8/slp-report-tracking/issues).
+The app only contacts GitHub when you check for a software update. For help or to report a problem, [open a GitHub issue](https://github.com/NathanReed8/slp-report-tracking/issues).
 
 ## Features
 

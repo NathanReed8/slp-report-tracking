@@ -1,6 +1,6 @@
 {
   "name": "slp-report-tracking",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "A small desktop app for tracking client progress report due dates.",
   "author": "Nathan Reed",
   "main": "main.js",
@@ -35,6 +35,7 @@
     "files": [
       "main.js",
       "data-migration.js",
+      "update-check.js",
       "preload.js",
       "index.html",
       "calendar.html",

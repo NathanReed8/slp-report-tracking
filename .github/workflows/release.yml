@@ -118,5 +118,5 @@ jobs:
             - **Windows:** [Download the Windows installer (.exe)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/SLP-Report-Tracking-${{ steps.version.outputs.version }}-win-x64.exe)
             - **Mac:** [Download the Mac installer (.dmg)](${{ github.server_url }}/${{ github.repository }}/releases/download/${{ github.ref_name }}/SLP-Report-Tracking-${{ steps.version.outputs.version }}-mac-universal.dmg)
 
-            The other files support automatic updates and can be ignored for a first-time installation.
+            The other files support in-app updates and can be ignored for a first-time installation.
           files: release-assets/*

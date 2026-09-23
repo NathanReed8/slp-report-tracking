@@ -113,6 +113,26 @@ cycleProfiles.addEventListener('drop', (event) => {
 });
 $('reset-colors').addEventListener('click', () => { settings.colorOverrides = {}; renderColors(); applyTheme(settings); });
 $('restore-defaults').addEventListener('click', () => { settings = defaultSettings(); $('settings-error').textContent = ''; $('settings-error').classList.remove('is-error'); render(); });
+window.tokenStore.appVersion().then((version) => { $('installed-version').textContent = version; }).catch(() => { $('installed-version').textContent = 'Unavailable'; });
+$('check-for-updates').addEventListener('click', async () => {
+  const button = $('check-for-updates');
+  const status = $('update-status');
+  button.disabled = true;
+  status.classList.remove('is-error');
+  status.textContent = 'Checking for updates…';
+  try {
+    const result = await window.tokenStore.checkForUpdates();
+    if (result.status === 'development') status.textContent = 'Update checks require an installed release.';
+    else if (result.status === 'up-to-date') status.textContent = `You’re up to date (${result.version}).`;
+    else if (result.status === 'available') status.textContent = `Version ${result.version} is available.`;
+    else throw new Error('Update check failed');
+  } catch (error) {
+    status.classList.add('is-error');
+    status.textContent = 'Could not check for updates. Please try again later.';
+  } finally {
+    button.disabled = false;
+  }
+});
 async function saveSettings() {
   if (!isSettings(settings)) {
     $('settings-error').textContent = 'Enter a positive whole-number interval and keep at least one progress report and evaluation in every cycle.';

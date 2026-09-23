@@ -42,6 +42,11 @@
         <div class="settings-card-content"><p class="settings-note">Choose the progress report / eval order that repeats for each client group.</p><div id="cycle-profiles" class="schedule-profiles"></div></div>
       </section>
 
+      <section class="settings-card" aria-labelledby="updates-heading">
+        <div class="settings-card-heading"><div><h2 id="updates-heading">Updates</h2></div><button id="check-for-updates" class="secondary-button update-check-button" type="button">Check for updates</button></div>
+        <div class="settings-card-content update-card-content"><p class="settings-note">Installed version: <span id="installed-version">Loading…</span></p><p id="update-status" class="update-status" role="status" aria-live="polite"></p></div>
+      </section>
+
       <p id="settings-error" class="settings-status" role="alert"></p>
       <div class="settings-actions"><button id="restore-defaults" class="secondary-button" type="button">Restore defaults</button><button class="primary-button" type="submit">Save settings</button></div>
     </form>
