@@ -19,6 +19,11 @@ async function loadAndApplyTheme() {
   try {
     const saved = await window.tokenStore.loadSettings();
     const settings = isSettings(saved) ? saved : defaultSettings();
+    const legacyColorMap = { primary: ['clientsAdd', 'calendarManageClients'], secondary: ['clientsReset', 'calendarToday'], edit: ['clientsEdit'], delete: ['clientsDelete'], progress: ['clientsProgress', 'calendarProgress'], evaluation: ['clientsEvaluation', 'calendarEvaluation'], history: ['clientsHistory'] };
+    Object.entries(legacyColorMap).forEach(([oldRole, roles]) => {
+      if (!settings.colorOverrides[oldRole]) return;
+      roles.forEach((role) => { if (settings.colorOverrides[role] === undefined) settings.colorOverrides[role] = settings.colorOverrides[oldRole]; });
+    });
     applyTheme(settings);
     return settings;
   } catch (_) {

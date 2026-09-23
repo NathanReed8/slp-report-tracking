@@ -1,7 +1,11 @@
-const BUTTON_COLOR_ROLES = ['primary', 'secondary', 'edit', 'delete', 'progress', 'evaluation', 'history', 'calendarNavigation'];
+const BUTTON_COLOR_GROUPS = {
+  clients: ['clientsAdd', 'clientsReset', 'clientsSort', 'clientsEdit', 'clientsDelete', 'clientsProgress', 'clientsEvaluation', 'clientsHistory'],
+  calendar: ['calendarManageClients', 'calendarToday', 'calendarNavigation', 'calendarView', 'calendarProgress', 'calendarEvaluation']
+};
+const BUTTON_COLOR_ROLES = Object.values(BUTTON_COLOR_GROUPS).flat();
 const THEME_PALETTES = {
-  light: { primary: '#315ee8', secondary: '#ffffff', edit: '#315ee8', delete: '#d9363e', progress: '#198754', evaluation: '#7c4dba', history: '#ffffff', calendarNavigation: '#ffffff' },
-  dark: { primary: '#7c9cff', secondary: '#252d3b', edit: '#6692ff', delete: '#ff6972', progress: '#39c98c', evaluation: '#bd92ff', history: '#2a233a', calendarNavigation: '#252d3b' }
+  light: { primary: '#315ee8', secondary: '#ffffff', edit: '#315ee8', delete: '#d9363e', progress: '#198754', evaluation: '#7c4dba', history: '#ffffff', calendarNavigation: '#ffffff', clientsAdd: '#315ee8', clientsReset: '#ffffff', clientsSort: '#ffffff', clientsEdit: '#315ee8', clientsDelete: '#d9363e', clientsProgress: '#198754', clientsEvaluation: '#7c4dba', clientsHistory: '#ffffff', calendarManageClients: '#315ee8', calendarToday: '#ffffff', calendarView: '#ffffff', calendarProgress: '#198754', calendarEvaluation: '#7c4dba' },
+  dark: { primary: '#7c9cff', secondary: '#252d3b', edit: '#6692ff', delete: '#ff6972', progress: '#39c98c', evaluation: '#bd92ff', history: '#2a233a', calendarNavigation: '#252d3b', clientsAdd: '#7c9cff', clientsReset: '#252d3b', clientsSort: '#252d3b', clientsEdit: '#6692ff', clientsDelete: '#ff6972', clientsProgress: '#39c98c', clientsEvaluation: '#bd92ff', clientsHistory: '#2a233a', calendarManageClients: '#7c9cff', calendarToday: '#252d3b', calendarView: '#252d3b', calendarProgress: '#39c98c', calendarEvaluation: '#bd92ff' }
 };
 function interval(value, unit) { return { value, unit }; }
 function defaultSettings() { return { theme: 'light', colorOverrides: {}, schedules: { medicaid: { interval: interval(90, 'days'), cycle: ['progress', 'eval'] }, nonMedicaid: { interval: interval(90, 'days'), cycle: ['progress', 'progress', 'progress', 'eval'] } } }; }
@@ -11,4 +15,4 @@ function isScheduleProfile(profile) { return Boolean(profile) && isInterval(prof
 function isSettings(value) { return Boolean(value) && ['light', 'dark'].includes(value.theme) && value.colorOverrides && typeof value.colorOverrides === 'object' && BUTTON_COLOR_ROLES.every((role) => value.colorOverrides[role] === undefined || /^#[0-9a-f]{6}$/i.test(value.colorOverrides[role])) && value.schedules && isScheduleProfile(value.schedules.medicaid) && isScheduleProfile(value.schedules.nonMedicaid); }
 function profileFor(medicaidClient) { return medicaidClient === 'yes' ? 'medicaid' : 'nonMedicaid'; }
 function intervalLabel(value) { return `${value.value} ${value.unit.slice(0, -1)}${value.value === 1 ? '' : 's'}`; }
-if (typeof module !== 'undefined') module.exports = { BUTTON_COLOR_ROLES, THEME_PALETTES, defaultSettings, clone, isInterval, isScheduleProfile, isSettings, profileFor, intervalLabel };
+if (typeof module !== 'undefined') module.exports = { BUTTON_COLOR_ROLES, BUTTON_COLOR_GROUPS, THEME_PALETTES, defaultSettings, clone, isInterval, isScheduleProfile, isSettings, profileFor, intervalLabel };

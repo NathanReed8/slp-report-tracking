@@ -39,7 +39,8 @@ function render() {
   $('right-actions').innerHTML = visibleClients.length ? `<div class="floating-action-spacer" aria-hidden="true"></div>${visibleClients.map((client) => {
     const task = currentTask(client);
     const label = task?.type === 'eval' ? 'Eval submitted' : 'Progress submitted';
-    return `<div class="floating-action-row"><button class="row-action-button submitted-button next-submission-button" data-submission="${task?.type || ''}" data-client-id="${escapeHtml(client.id)}" type="button"${task ? '' : ' disabled'}>${label}</button><button class="row-action-button history-button" data-history="${escapeHtml(client.id)}" type="button">History</button></div>`;
+    const submissionClass = task?.type === 'eval' ? 'clients-evaluation-button' : 'clients-progress-button';
+    return `<div class="floating-action-row"><button class="row-action-button submitted-button next-submission-button ${submissionClass}" data-submission="${task?.type || ''}" data-client-id="${escapeHtml(client.id)}" type="button"${task ? '' : ' disabled'}>${label}</button><button class="row-action-button history-button" data-history="${escapeHtml(client.id)}" type="button">History</button></div>`;
   }).join('')}` : '';
   $('empty-state').hidden = visibleClients.length > 0;
   $('empty-state').textContent = clients.length === 0 ? 'No clients added yet. Add one to start tracking report and evaluation due dates.' : 'No clients match this Medicaid filter.';

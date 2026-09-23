@@ -9,13 +9,13 @@ const cycleProfiles = $('cycle-profiles');
 const profileTitles = { medicaid: 'Medicaid clients', nonMedicaid: 'Non-Medicaid clients' };
 
 function colorLabel(role) {
-  return { primary: 'Primary actions', secondary: 'Secondary actions', edit: 'Edit', delete: 'Delete', progress: 'Progress submitted', evaluation: 'Evaluation submitted', history: 'History', calendarNavigation: 'Calendar navigation' }[role];
+  return { clientsAdd: 'Add client', clientsReset: 'Reset sort', clientsSort: 'Sort columns', clientsEdit: 'Edit client', clientsDelete: 'Delete client', clientsProgress: 'Progress report submitted', clientsEvaluation: 'Evaluation submitted', clientsHistory: 'History', calendarManageClients: 'Manage clients', calendarToday: 'Today', calendarNavigation: 'Previous / next period', calendarView: 'Week / month toggle', calendarProgress: 'Progress report event', calendarEvaluation: 'Evaluation event' }[role];
 }
 function renderColors() {
-  $('color-controls').innerHTML = BUTTON_COLOR_ROLES.map((role) => {
+  $('color-controls').innerHTML = Object.entries(BUTTON_COLOR_GROUPS).map(([group, roles]) => `<fieldset class="color-group"><legend>${group === 'clients' ? 'Clients tab' : 'Calendar tab'}</legend>${roles.map((role) => {
     const value = settings.colorOverrides[role] || THEME_PALETTES[settings.theme][role];
     return `<label class="color-control"><span>${colorLabel(role)}</span><input data-color-role="${role}" type="color" value="${value}"><output>${value.toUpperCase()}</output></label>`;
-  }).join('');
+  }).join('')}</fieldset>`).join('');
   document.querySelector(`input[name="theme"][value="${settings.theme}"]`).checked = true;
 }
 function intervalProfile(profileKey) {
